@@ -1,0 +1,316 @@
+import tkinter as tk
+from tkinter import messagebox
+import colorama as col
+import subprocess as sp
+import os
+import multitasking
+from termcolor import cprint
+
+root = tk.Tk()
+root.title("C-Count")
+root.geometry("320x500")
+root.resizable(width=False, height=False)
+root.minsize(320, 500)
+root.iconbitmap("./src/logo.ico")
+
+col.init()  # Initialize Colorama's text color coding
+
+
+def shutdown_protocol():
+    kill_counting()
+    root.destroy()
+
+    os._exit(0)
+
+
+@multitasking.task
+def raise_error(title, text, type="error"):
+    if type == "error":
+        messagebox.showerror(title, text)
+    elif type == "warning":
+        messagebox.showwarning(title, text)
+
+
+def kill_counting():
+    # The batch command that kills the counting .exe
+    shutdown_command = "taskkill /f /im count.exe"
+
+    # `subprocess.run()` takes the command argument as a list, so we have to do this
+    command_list = shutdown_command.split(" ")
+    sp.run(command_list, stdout=sp.DEVNULL)  # `stdout=sp.DEVNULL` mutes the output
+
+
+def run_checks(start, end, change_color_on_error=True, show_message_box_on_error=True):
+    ## Check if entry boxes are empty: If so, return False.
+    if start == "" and change_color_on_error:
+        start_entry.config({"background": "red"})
+        start_entry.config({"foreground": "white"})
+
+    if end == "" and change_color_on_error:
+        end_entry.config({"background": "red"})
+        end_entry.config({"foreground": "white"})
+
+    if start == "" or end == "":
+        if show_message_box_on_error:
+            raise_error(
+                title="Error!",
+                text="Invalid input! Entry boxes can't be empty.",
+            )
+
+        return False
+
+    ## Check if start integer is greater than end integer. If so, return False.
+    # Use try except, in case conversion of `start` and `end` to integers fail, due to
+    # them not being numbers.
+    try:
+        if int(start) > int(end) and end != "-1" or "":
+            if show_message_box_on_error:
+                raise_error(
+                    title="Error!",
+                    text="Invalid input! Start integer can't be greater than end integer.",
+                )
+
+            if change_color_on_error:
+                start_entry.config({"background": "red"})
+                start_entry.config({"foreground": "white"})
+
+            return False
+    except ValueError:
+        pass
+
+    ## Check if end "integer" is "-". If so, return False.
+    if change_color_on_error == True and end == "-":
+        raise_error(
+            title="Error!",
+            text="Invalid input! End integer can't be only a minus.",
+        )
+        end_entry.config({"background": "red"})
+        end_entry.config({"foreground": "white"})
+
+        return False
+
+    start_entry.config({"background": "white"})
+    start_entry.config({"foreground": "black"})
+    end_entry.config({"background": "white"})
+    end_entry.config({"foreground": "black"})
+
+    return True
+
+
+start_entry_old_state = ""
+end_entry_old_state = ""
+infinity_mode = True
+
+
+def infinity_mode_switch(disable=True):
+    global start_entry_old_state
+    global end_entry_old_state
+    global infinity_mode
+
+    if infinity_mode:  # Enable
+        infinity_mode = False
+
+        # If the start entry box is empty, fill it in with 1
+        if start_entry.get() == "":
+            # Save start entry box's current state
+            start_entry_old_state = start_entry.get()
+            start_entry.delete(0, "end")  # Delete start entry box's contents
+            start_entry.insert(0, "1")
+
+        end_entry_old_state = end_entry.get()  # Save end entry box's current state
+        end_entry.delete(0, "end")  # Delete end entry box's contents
+        end_entry.insert(0, "-1")  # Insert "-1" -- infinity mode
+        if disable:
+            end_entry.config(state="disabled")
+
+    else:  # Disable
+        infinity_mode = True
+        end_entry.config(state="normal")
+        end_entry.delete(0, "end")  # Delete end entry box's contents
+
+        if start_entry_old_state == "" and start_entry.get() == "1":
+            start_entry.delete(0, "end")  # Revert to old state -- ""
+
+        # If the user entered the value "-1" themself beforehand, and
+        # `end_entry_old_state` therefore is "-1", delete it -- because it looks ugly
+        # with the unchecked checkbox, but still having the infinity mode enabled becuase
+        # of the entry box's value. Also, disallow "-", because that too looks ugly -- and
+        # despite that, it's illogical for it to be there: if you're turning off infinity
+        # mode, why would you start it again right after?
+        if end_entry_old_state != "-1" or "-":
+            # Insert the old value (`end_entry_old_state`)
+            end_entry.insert(0, end_entry_old_state)
+
+
+def validate_input(name, action, new, old):
+    """
+    @ name: The name of the widget.
+    @ action: Action code; "0" for an attempted deletion, "1" for an attempted insertion,
+            @ or "-1" if the callback was called for focus in, focus out, or a change to
+            @ the textvariable.
+    @ new: The value that the text will have if the change is allowed.
+    @ old: The text in the entry before the change.
+    """
+
+    allowed_chars = "0123456789-"
+
+    ## Check if attempted action is deletion. If so, allow it.
+    if action == "0":
+        if old == "-1":
+            # Uncheck the infinity mode check button, since infinity mode now is disabled
+            inifnity_mode_check_button.deselect()
+            # infinity_mode = False
+
+        return True
+
+    ## Check if input is longer than 1 character, which means that the program has
+    ## inserted it. If so, allow it, because to be inserted in the first place, each
+    ## individual character have to been accepted before.
+    if old == "" and len(new) > 1:
+        return True
+
+    ## Check if input character is allowed, if so ... allow it
+    elif action == "1":
+        # `input` is what character has been typed
+        if len(new) == 1:
+            input = new
+        else:
+            # Go through the `old` and `new` character pairs, and check where they differ.
+            # These are the rules for each recursion:
+            # We can always assume that `new` is longer than ´old´, because we're adding 1
+            # character to `old` in `new`. So, if they differ on index `index`, we know
+            # that the differing (the `input`) character is `new[index]`.
+            # If `old`'s length is `index`, and `old[index]` and `new[index]` are the
+            # same, we know that the differing (the `input`) character is
+            # `new[index + 1]`.
+            index = 0
+            for old_char, new_char in zip(old, new):
+                if len(old) == index + 1 and old_char == new_char:
+                    input = new[index + 1]
+                elif old_char != new_char:
+                    input = new[index]
+                    break
+
+                index += 1
+    else:
+        input = None
+    print(input)
+    if input not in allowed_chars:
+        return False
+
+    ## Check if value is going to be (or be able to become) "-1". If so, allow it.
+    if name == "end" and new == "-1":
+        # Check the infinity mode check button, since infinity mode now is enabled
+        infinity_mode_switch()
+        inifnity_mode_check_button.select()
+
+        return True
+
+    if input == "-":
+        if name == "start":
+            return False
+        if old == "":
+            return True
+
+        return False
+
+    elif old == "-" and new != "-1":
+        return False
+
+    return True
+
+
+def entry_vcmd_while_typing(name, action, new, old):
+    result = validate_input(name, action, new, old)
+
+    if name == "start":
+        run_checks(
+            new,
+            end_entry.get(),
+            change_color_on_error=False,
+            show_message_box_on_error=False,
+        )
+    else:
+        run_checks(
+            start_entry.get(),
+            new,
+            change_color_on_error=False,
+            show_message_box_on_error=False,
+        )
+
+    return result
+
+
+class Image_button(tk.Button):
+    def __init__(self, master, unclicked, clicked):
+        self.unclicked_image = tk.PhotoImage(file=unclicked)
+        self.clicked_image = tk.PhotoImage(file=clicked)
+        super().__init__(
+            master, image=self.unclicked_image, height=250, width=250, bd=0
+        )
+        self.toggle_state = -1  # -1 is off; 1 is on
+        self.bind("<Button-1>", self.click_function)
+
+    @multitasking.task
+    def click_function(self, event):
+        self.toggle_state *= -1
+        if self.toggle_state == 1:  # On
+
+            start = start_entry.get()
+            end = end_entry.get()
+            if run_checks(start, end):
+                c_program = sp.Popen(["./count.exe", start, end])
+                self.config(image=self.clicked_image)
+                c_program.communicate()[0]
+                return_code = c_program.returncode
+                if return_code == 0:
+                    cprint("\nSuccess!", "green")
+
+                self.config(image=self.unclicked_image)
+
+            self.toggle_state = -1
+
+        else:  # Off
+            self.config(image=self.unclicked_image)
+
+            kill_counting()
+
+            cprint("\nTerminated.", "red")
+            self.toggle_state = -1
+
+
+button = Image_button(root, "./src/off_small.png", "./src/on_small.png")
+button.pack()
+
+# Start entry box validation command
+start_vcmd = (root.register(entry_vcmd_while_typing), "start", "%d", "%P", "%s")
+
+# End entry box validation command
+end_vcmd = (root.register(entry_vcmd_while_typing), "end", "%d", "%P", "%s")
+
+frame = tk.Frame()
+frame.pack()
+
+start_label = tk.Label(frame, text="Start at")
+start_label.grid(row=0, column=0, sticky="e")
+
+start_entry = tk.Entry(frame)
+start_entry.grid(row=0, column=1, sticky="w")
+start_entry.config(validate="key", validatecommand=start_vcmd)
+
+end_label = tk.Label(frame, text="End at")
+end_label.grid(row=1, column=0, sticky="e")
+
+end_entry = tk.Entry(frame)
+end_entry.grid(row=1, column=1, sticky="w")
+end_entry.config(validate="key", validatecommand=end_vcmd)
+
+inifnity_mode_check_button = tk.Checkbutton(
+    frame,
+    text="Infinity mode",
+    command=infinity_mode_switch,
+)
+inifnity_mode_check_button.grid(row=2, column=1, sticky="w")
+
+root.protocol("WM_DELETE_WINDOW", shutdown_protocol)
+root.mainloop()
