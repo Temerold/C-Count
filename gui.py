@@ -13,7 +13,7 @@ root.resizable(width=False, height=False)
 root.minsize(320, 500)
 root.iconbitmap("./src/logo.ico")
 
-col.init()  # Initialize Colorama's text color coding
+col.init()  # Initialize Colorama's text color-coding
 
 
 def shutdown_protocol():
@@ -63,7 +63,7 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
     # Use try except, in case conversion of `start` and `end` to integers fail, due to
     # them not being numbers.
     try:
-        if int(start) > int(end) and end != "-1" or "":
+        if int(start) > int(end) and end != "-1" and end != "":
             if show_message_box_on_error:
                 raise_error(
                     title="Error!",
@@ -79,7 +79,7 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
         pass
 
     ## Check if end "integer" is "-". If so, return False.
-    if change_color_on_error == True and end == "-":
+    if change_color_on_error and end == "-":
         raise_error(
             title="Error!",
             text="Invalid input! End integer can't be only a minus.",
@@ -99,17 +99,15 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
 
 start_entry_old_state = ""
 end_entry_old_state = ""
-infinity_mode = True
+infinity_mode = tk.BooleanVar()
 
 
-def infinity_mode_switch(disable=True):
+def infinity_mode_switch(event=None):
     global start_entry_old_state
     global end_entry_old_state
     global infinity_mode
 
-    if infinity_mode:  # Enable
-        infinity_mode = False
-
+    if not infinity_mode.get():  # Enable
         # If the start entry box is empty, fill it in with 1
         if start_entry.get() == "":
             # Save start entry box's current state
@@ -119,12 +117,10 @@ def infinity_mode_switch(disable=True):
 
         end_entry_old_state = end_entry.get()  # Save end entry box's current state
         end_entry.delete(0, "end")  # Delete end entry box's contents
-        end_entry.insert(0, "-1")  # Insert "-1" -- infinity mode
-        if disable:
-            end_entry.config(state="disabled")
+        end_entry.insert(0, "Infinity")
+        end_entry.config(state="disabled")
 
     else:  # Disable
-        infinity_mode = True
         end_entry.config(state="normal")
         end_entry.delete(0, "end")  # Delete end entry box's contents
 
@@ -137,7 +133,7 @@ def infinity_mode_switch(disable=True):
         # of the entry box's value. Also, disallow "-", because that too looks ugly -- and
         # despite that, it's illogical for it to be there: if you're turning off infinity
         # mode, why would you start it again right after?
-        if end_entry_old_state != "-1" or "-":
+        if end_entry_old_state != "-1" and end_entry_old_state != "-":
             # Insert the old value (`end_entry_old_state`)
             end_entry.insert(0, end_entry_old_state)
 
@@ -156,21 +152,23 @@ def validate_input(name, action, new, old):
 
     ## Check if attempted action is deletion. If so, allow it.
     if action == "0":
-        if old == "-1":
-            # Uncheck the infinity mode check button, since infinity mode now is disabled
-            inifnity_mode_check_button.deselect()
-            # infinity_mode = False
-
         return True
 
-    ## Check if input is longer than 1 character, which means that the program has
-    ## inserted it. If so, allow it, because to be inserted in the first place, each
-    ## individual character have to been accepted before.
-    if old == "" and len(new) > 1:
+    ## Check if input is "Infinity". If so, allow it.
+    if name == "end" and new == "Infinity":
         return True
+
+    ## Check if the input is longer than 1 character. If so, break it up into several
+    ## `validate_input()` calls.
+    # Go through `new`, and check for illegal characters. If any are found, none of the
+    # characters gets through.
+    if len(new) - len(old) > 1:
+        for char in new:
+            if not validate_input(name, "1", char, ""):
+                return False
 
     ## Check if input character is allowed, if so ... allow it
-    elif action == "1":
+    if action == "1":
         # `input` is what character has been typed
         if len(new) == 1:
             input = new
@@ -179,9 +177,9 @@ def validate_input(name, action, new, old):
             # These are the rules for each recursion:
             # We can always assume that `new` is longer than ´old´, because we're adding 1
             # character to `old` in `new`. So, if they differ on index `index`, we know
-            # that the differing (the `input`) character is `new[index]`.
+            # that the differing (the input) character is `new[index]`.
             # If `old`'s length is `index`, and `old[index]` and `new[index]` are the
-            # same, we know that the differing (the `input`) character is
+            # same, we know that the differing (the input) character is
             # `new[index + 1]`.
             index = 0
             for old_char, new_char in zip(old, new):
@@ -192,15 +190,22 @@ def validate_input(name, action, new, old):
                     break
 
                 index += 1
+
     else:
-        input = None
-    print(input)
+        return False
+
+    # If `input` doesn't exist, it means that `validate_input()` has recieved a
+    # longer-than-1-character input. If it continued to here, it means that each
+    # individual character is legal anyways, so we can define (lie) `input` as "0" (which
+    # is in `allowed_chars`), so that it passes below.
+    if "input" not in locals():
+        input = "0"
+
     if input not in allowed_chars:
         return False
 
     ## Check if value is going to be (or be able to become) "-1". If so, allow it.
     if name == "end" and new == "-1":
-        # Check the infinity mode check button, since infinity mode now is enabled
         infinity_mode_switch()
         inifnity_mode_check_button.select()
 
@@ -209,12 +214,16 @@ def validate_input(name, action, new, old):
     if input == "-":
         if name == "start":
             return False
+
         if old == "":
             return True
 
+        if old == "-" and new != "-1":
+            return False
+
         return False
 
-    elif old == "-" and new != "-1":
+    if old == "-" and new != "-1":
         return False
 
     return True
@@ -223,20 +232,21 @@ def validate_input(name, action, new, old):
 def entry_vcmd_while_typing(name, action, new, old):
     result = validate_input(name, action, new, old)
 
-    if name == "start":
-        run_checks(
-            new,
-            end_entry.get(),
-            change_color_on_error=False,
-            show_message_box_on_error=False,
-        )
-    else:
-        run_checks(
-            start_entry.get(),
-            new,
-            change_color_on_error=False,
-            show_message_box_on_error=False,
-        )
+    if result:  # Run checks if the the characters are legal
+        if name == "start":
+            run_checks(
+                new,
+                end_entry.get(),
+                change_color_on_error=False,
+                show_message_box_on_error=False,
+            )
+        else:
+            run_checks(
+                start_entry.get(),
+                new,
+                change_color_on_error=False,
+                show_message_box_on_error=False,
+            )
 
     return result
 
@@ -252,12 +262,15 @@ class Image_button(tk.Button):
         self.bind("<Button-1>", self.click_function)
 
     @multitasking.task
-    def click_function(self, event):
+    def click_function(self, event=None):
         self.toggle_state *= -1
         if self.toggle_state == 1:  # On
 
             start = start_entry.get()
             end = end_entry.get()
+            if end == "Infinity":
+                end == "-1"
+
             if run_checks(start, end):
                 c_program = sp.Popen(["./count.exe", start, end])
                 self.config(image=self.clicked_image)
@@ -308,9 +321,12 @@ end_entry.config(validate="key", validatecommand=end_vcmd)
 inifnity_mode_check_button = tk.Checkbutton(
     frame,
     text="Infinity mode",
-    command=infinity_mode_switch,
+    variable=infinity_mode,
+    onvalue=True,
+    offvalue=False,
 )
 inifnity_mode_check_button.grid(row=2, column=1, sticky="w")
+inifnity_mode_check_button.bind("<Button-1>", infinity_mode_switch)
 
 root.protocol("WM_DELETE_WINDOW", shutdown_protocol)
 root.mainloop()
