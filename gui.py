@@ -133,7 +133,7 @@ def infinity_mode_switch(event=None):
         # of the entry box's value. Also, disallow "-", because that too looks ugly -- and
         # despite that, it's illogical for it to be there: if you're turning off infinity
         # mode, why would you start it again right after?
-        if end_entry_old_state != "-1" and end_entry_old_state != "-":
+        if end_entry_old_state not in ["-1", "-"]:
             # Insert the old value (`end_entry_old_state`)
             end_entry.insert(0, end_entry_old_state)
 
@@ -167,32 +167,30 @@ def validate_input(name, action, new, old):
             if not validate_input(name, "1", char, ""):
                 return False
 
-    ## Check if input character is allowed, if so ... allow it
-    if action == "1":
-        # `input` is what character has been typed
-        if len(new) == 1:
-            input = new
-        else:
-            # Go through the `old` and `new` character pairs, and check where they differ.
-            # These are the rules for each recursion:
-            # We can always assume that `new` is longer than ´old´, because we're adding 1
-            # character to `old` in `new`. So, if they differ on index `index`, we know
-            # that the differing (the input) character is `new[index]`.
-            # If `old`'s length is `index`, and `old[index]` and `new[index]` are the
-            # same, we know that the differing (the input) character is
-            # `new[index + 1]`.
-            index = 0
-            for old_char, new_char in zip(old, new):
-                if len(old) == index + 1 and old_char == new_char:
-                    input = new[index + 1]
-                elif old_char != new_char:
-                    input = new[index]
-                    break
-
-                index += 1
-
-    else:
+    if action != "1":
         return False
+
+    # `input` is what character has been typed
+    if len(new) == 1:
+        input = new
+    else:
+        # Go through the `old` and `new` character pairs, and check where they differ.
+        # These are the rules for each recursion:
+        # We can always assume that `new` is longer than ´old´, because we're adding 1
+        # character to `old` in `new`. So, if they differ on index `index`, we know
+        # that the differing (the input) character is `new[index]`.
+        # If `old`'s length is `index`, and `old[index]` and `new[index]` are the
+        # same, we know that the differing (the input) character is
+        # `new[index + 1]`.
+        index = 0
+        for old_char, new_char in zip(old, new):
+            if len(old) == index + 1 and old_char == new_char:
+                input = new[index + 1]
+            elif old_char != new_char:
+                input = new[index]
+                break
+
+            index += 1
 
     # If `input` doesn't exist, it means that `validate_input()` has recieved a
     # longer-than-1-character input. If it continued to here, it means that each
@@ -268,8 +266,9 @@ class Image_button(tk.Button):
 
             start = start_entry.get()
             end = end_entry.get()
+            print(end)
             if end == "Infinity":
-                end == "-1"
+                end = "-1"
 
             if run_checks(start, end):
                 c_program = sp.Popen(["./count.exe", start, end])
