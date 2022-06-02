@@ -33,7 +33,7 @@ def raise_error(title, text, type="error"):
 
 def kill_counting():
     # The batch command that kills the counting .exe
-    shutdown_command = "taskkill /f /im count.exe"
+    shutdown_command = "taskkill /f /im c-count.exe"
 
     # `subprocess.run()` takes the command argument as a list, so we have to do this
     command_list = shutdown_command.split(" ")
@@ -271,7 +271,7 @@ class Image_button(tk.Button):
                 end = "-1"
 
             if run_checks(start, end):
-                c_program = sp.Popen(["./count.exe", start, end])
+                c_program = sp.Popen(["./c-count.exe", start, end])
                 self.config(image=self.clicked_image)
                 c_program.communicate()[0]
                 return_code = c_program.returncode

@@ -1,2 +1,2 @@
-# c-count
+# C-Count
 Counts in C.
