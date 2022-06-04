@@ -266,7 +266,6 @@ class Image_button(tk.Button):
 
             start = start_entry.get()
             end = end_entry.get()
-            print(end)
             if end == "Infinity":
                 end = "-1"
 
