@@ -4,9 +4,9 @@
 #include <windows.h>
 #include <inttypes.h>
 
-// ! IMPORTANT: Remember to run the `compile_count_c.bat` script when `count.c` (this file)
-// ! is altered, to compile it, and to then add the .exe (c-count.exe) file to the git
-// ! commit
+// ! IMPORTANT: Remember to run the `compile_count_c.bat` script when `count.c` (this
+// ! file) is altered -- to compile it -- and then add the .exe (c-count.exe) file to the
+// ! git commit
 
 int digits_only(const char s[])
 {
