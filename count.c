@@ -5,7 +5,7 @@
 #include <inttypes.h>
 
 // ! IMPORTANT: Remember to run the `compile.bat` script when `count.c` (this file) is
-// ! altered -- to compile it -- and then add the .exe (c-count.exe) file to the git
+// ! altered -- to compile it -- and then add the .exe (`C-Count.exe`) file to the git
 // ! commit
 
 int digits_only(const char s[])
