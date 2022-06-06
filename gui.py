@@ -24,13 +24,11 @@ def shutdown_protocol():
 
 
 @multitasking.task
-def raise_message(text, title="Error!", type="error"):
+def raise_error(title, text, type="error"):
     if type == "error":
         messagebox.showerror(title, text)
     elif type == "warning":
         messagebox.showwarning(title, text)
-    else:
-        raise_message('`raise_message()` only accepts types "error" and "warning"!')
 
 
 def kill_counting():
@@ -54,7 +52,10 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
 
     if start == "" or end == "":
         if show_message_box_on_error:
-            raise_message("Invalid input! Entry boxes can't be empty.")
+            raise_error(
+                title="Error!",
+                text="Invalid input! Entry boxes can't be empty.",
+            )
 
         return False
 
@@ -64,8 +65,9 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
     try:
         if int(start) > int(end) and end != "-1" and end != "":
             if show_message_box_on_error:
-                raise_message(
-                    "Invalid input! Start integer can't be greater than end integer."
+                raise_error(
+                    title="Error!",
+                    text="Invalid input! Start integer can't be greater than end integer.",
                 )
 
             if change_color_on_error:
@@ -78,7 +80,10 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
 
     ## Check if end "integer" is "-". If so, return False.
     if change_color_on_error and end == "-":
-        raise_message("Invalid input! End integer can't be only a minus.")
+        raise_error(
+            title="Error!",
+            text="Invalid input! End integer can't be only a minus.",
+        )
         end_entry.config({"background": "red"})
         end_entry.config({"foreground": "white"})
 
