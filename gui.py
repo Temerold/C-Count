@@ -116,25 +116,26 @@ def infinity_mode_switch(event=None):
             start_entry.insert(0, "1")
 
         end_entry_old_state = end_entry.get()  # Save end entry box's current state
-        end_entry.delete(0, "end")
+        end_entry.delete(0, "end")  # Delete end entry box's contents
         end_entry.insert(0, "Infinity")
         end_entry.config(state="disabled")
 
     else:  # Disable
         end_entry.config(state="normal")
-        end_entry.delete(0, "end")
+        end_entry.delete(0, "end")  # Delete end entry box's contents
 
         if start_entry_old_state == "" and start_entry.get() == "1":
             start_entry.delete(0, "end")  # Revert to old state -- ""
 
-        if end_entry_old_state not in ["-1", "-", "1"]:
+        # If the user entered the value "-1" themself beforehand, and
+        # `end_entry_old_state` therefore is "-1", delete it -- because it looks ugly
+        # with the unchecked checkbox, but still having the infinity mode enabled becuase
+        # of the entry box's value. Also, disallow "-", because that too looks ugly -- and
+        # despite that, it's illogical for it to be there: if you're turning off infinity
+        # mode, why would you start it again right after?
+        if end_entry_old_state not in ["-1", "-"]:
             # Insert the old value (`end_entry_old_state`)
             end_entry.insert(0, end_entry_old_state)
-
-    # After entry boxs' contents are deleted, their validate keys get removed. Why? I
-    # don't know. Anyway, we have to redefine them:
-    start_entry.config(validate="key")
-    end_entry.config(validate="key")
 
 
 def validate_input(name, action, new, old):
