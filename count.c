@@ -10,7 +10,7 @@
 
 // ! IMPORTANT: Remember to run the `compile.bat` script when `count.c` (this file) is
 // ! altered -- to compile it -- and then add the .exe (`C-Count.exe`) file to the git
-// ! commit
+// ! commit!
 
 void wait_for_newline(char *text)
 {
@@ -66,7 +66,8 @@ void change_color(char color[])
     else
     {
         change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Only the colors red and white are allowed.\n");
+        wait_for_newline("\nERROR: Invalid input! Only the colors red and white are "
+                         "allowed.\n");
         change_color("white");
         exit(1);
     }
@@ -78,14 +79,16 @@ void count(int start, int end)
     if (end < start && end != -1)
     {
         change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Start integer can't be greater than end integer.\n");
+        wait_for_newline("\nERROR: Invalid input! Start integer can't be greater than end"
+                         " integer.\n");
         change_color("white");
         exit(2);
     }
     else if (start < 0) // ´start´ is negative
     {
         change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Start integer can't be a negative number.\n");
+        wait_for_newline("\nERROR: Invalid input! Start integer can't be a negative "
+                         "number.\n");
         change_color("white");
         exit(2);
     }
@@ -93,8 +96,8 @@ void count(int start, int end)
     else if (end < 0 && end != -1)
     {
         change_color("red");
-        wait_for_newline("\nERROR: Invalid input! End integer can't be a negative number (except "
-                         "for -1, which means infinity).\n");
+        wait_for_newline("\nERROR: Invalid input! End integer can't be a negative number "
+                         "(except for -1, which means infinity).\n");
         change_color("white");
 
         exit(2);
