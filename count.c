@@ -12,15 +12,17 @@
 // ! altered -- to compile it -- and then add the .exe (`C-Count.exe`) file to the git
 // ! commit
 
-void wait_for_newline()
+void wait_for_newline(char *text)
 {
-    printf("\n");
+    printf(text);
     char prev = 0;
     while (1)
     {
         char c = getchar();
         if (c == '\n' && prev == c)
-            exit(0);
+        {
+            break;
+        }
         prev = c;
     }
 }
@@ -64,10 +66,9 @@ void change_color(char color[])
     else
     {
         change_color("red");
-        printf("ERROR: Invalid input! Only the colors red and white are allowed.");
+        wait_for_newline("\nERROR: Invalid input! Only the colors red and white are allowed.\n");
         change_color("white");
         exit(1);
-        wait_for_newline();
     }
 }
 
@@ -77,29 +78,26 @@ void count(int start, int end)
     if (end < start && end != -1)
     {
         change_color("red");
-        printf("ERROR: Invalid input! Start integer can't be greater than end integer."
-               "\n");
+        wait_for_newline("\nERROR: Invalid input! Start integer can't be greater than end integer.\n");
         change_color("white");
         exit(2);
-        wait_for_newline();
     }
     else if (start < 0) // ´start´ is negative
     {
         change_color("red");
-        printf("ERROR: Invalid input! Start integer can't be a negative number.\n");
+        wait_for_newline("\nERROR: Invalid input! Start integer can't be a negative number.\n");
         change_color("white");
         exit(2);
-        wait_for_newline();
     }
     // ´end´ is negative (it can however be -1, which means infinity)
     else if (end < 0 && end != -1)
     {
         change_color("red");
-        printf("ERROR: Invalid input! End integer can't be a negative number (except for "
-               "-1, which means infinity).\n");
+        wait_for_newline("\nERROR: Invalid input! End integer can't be a negative number (except "
+                         "for -1, which means infinity).\n");
         change_color("white");
+
         exit(2);
-        wait_for_newline();
     }
 
     // Start counting at ´start´, and end at ´end´. If ´end´ is -1, the program will
@@ -129,7 +127,8 @@ void start_up(void)
         scanf("%d", &end);
 
         count(start, end);
-        wait_for_newline();
+        wait_for_newline("\n");
+        exit(0);
     }
 }
 
