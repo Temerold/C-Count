@@ -274,15 +274,14 @@ class Image_button(tk.Button):
 
                 self.config(image=self.unclicked_image)
 
-            self.toggle_state = -1
-
         else:  # Off
             self.config(image=self.unclicked_image)
 
             kill_counting()
 
             cprint("\nTerminated.", "red")
-            self.toggle_state = -1
+
+        self.toggle_state = -1
 
 
 button = Image_button(root, "./src/off_small.png", "./src/on_small.png")
