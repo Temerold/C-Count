@@ -165,9 +165,9 @@ def validate_input(name, action, new, old):
     if action != "1":
         return False
 
-    # `input` is what character has been typed
+    # `_input` is what character has been typed
     if len(new) == 1:
-        input = new
+        _input = new
     else:
         # Go through the `old` and `new` character pairs, and check where they differ.
         # These are the rules for each recursion:
@@ -180,21 +180,21 @@ def validate_input(name, action, new, old):
         index = 0
         for old_char, new_char in zip(old, new):
             if len(old) == index + 1 and old_char == new_char:
-                input = new[index + 1]
+                _input = new[index + 1]
             elif old_char != new_char:
-                input = new[index]
+                _input = new[index]
                 break
 
             index += 1
 
-    # If `input` doesn't exist, it means that `validate_input()` has recieved a
+    # If `_input` doesn't exist, it means that `validate_input()` has recieved a
     # longer-than-1-character input. If it continued to here, it means that each
-    # individual character is legal anyways, so we can define (lie) `input` as "0" (which
+    # individual character is legal anyways, so we can define (lie) `_input` as "0" (which
     # is in `allowed_chars`), so that it passes below.
     if "input" not in locals():
-        input = "0"
+        _input = "0"
 
-    if input not in allowed_chars:
+    if _input not in allowed_chars:
         return False
 
     ## Check if value is going to be (or be able to become) "-1". If so, allow it.
@@ -204,7 +204,7 @@ def validate_input(name, action, new, old):
 
         return True
 
-    if input == "-":
+    if _input == "-":
         if name == "start":
             return False
 
