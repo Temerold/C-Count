@@ -1,3 +1,7 @@
+#if _WIN32_WINNT < 0x0500
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0500
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -7,6 +11,19 @@
 // ! IMPORTANT: Remember to run the `compile.bat` script when `count.c` (this file) is
 // ! altered -- to compile it -- and then add the .exe (`C-Count.exe`) file to the git
 // ! commit
+
+void wait_for_newline()
+{
+    printf("\n");
+    char prev = 0;
+    while (1)
+    {
+        char c = getchar();
+        if (c == '\n' && prev == c)
+            exit(0);
+        prev = c;
+    }
+}
 
 int digits_only(const char s[])
 {
@@ -50,6 +67,7 @@ void change_color(char color[])
         printf("ERROR: Invalid input! Only the colors red and white are allowed.");
         change_color("white");
         exit(1);
+        wait_for_newline();
     }
 }
 
@@ -63,6 +81,7 @@ void count(int start, int end)
                "\n");
         change_color("white");
         exit(2);
+        wait_for_newline();
     }
     else if (start < 0) // ´start´ is negative
     {
@@ -70,15 +89,17 @@ void count(int start, int end)
         printf("ERROR: Invalid input! Start integer can't be a negative number.\n");
         change_color("white");
         exit(2);
+        wait_for_newline();
     }
     // ´end´ is negative (it can however be -1, which means infinity)
     else if (end < 0 && end != -1)
     {
         change_color("red");
-        printf("ERROR: Invalid input! End integer can't be a negative number (except for"
+        printf("ERROR: Invalid input! End integer can't be a negative number (except for "
                "-1, which means infinity).\n");
         change_color("white");
         exit(2);
+        wait_for_newline();
     }
 
     // Start counting at ´start´, and end at ´end´. If ´end´ is -1, the program will
@@ -86,6 +107,29 @@ void count(int start, int end)
     for (int num = start; num <= (end) || end == -1; ++num)
     {
         printf("\n%d", num);
+    }
+}
+
+void myStartupFun(void) __attribute__((constructor));
+
+void myStartupFun(void)
+{
+    HWND consoleWnd = GetConsoleWindow();
+    DWORD dwProcessId;
+    GetWindowThreadProcessId(consoleWnd, &dwProcessId);
+    if (GetCurrentProcessId() == dwProcessId) // If ran as a standalone
+    {
+        int start;
+        int end;
+        int sus;
+
+        printf("Start at: ");
+        scanf("%d", &start);
+        printf("End at: ");
+        scanf("%d", &end);
+
+        count(start, end);
+        wait_for_newline();
     }
 }
 
