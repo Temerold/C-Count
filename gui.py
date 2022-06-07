@@ -191,7 +191,9 @@ def validate_input(name, action, new, old):
     # longer-than-1-character input. If it continued to here, it means that each
     # individual character is legal anyways, so we can define (lie) `_input` as "0" (which
     # is in `allowed_chars`), so that it passes below.
-    if "input" not in locals():
+    # ! IMPORTANT: If the `_input` variable's name changes, this if statement won't work,
+    # ! because it's looking for a variable named "_input"!
+    if "_input" not in locals():
         _input = "0"
 
     if _input not in allowed_chars:
@@ -278,7 +280,6 @@ class Image_button(tk.Button):
             self.config(image=self.unclicked_image)
 
             kill_counting()
-
             cprint("\nTerminated.", "red")
 
         self.toggle_state = -1
