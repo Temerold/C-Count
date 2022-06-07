@@ -34,7 +34,7 @@ def raise_message(text, title="Error!", type="error"):
 
 
 def kill_counting():
-    # The batch command that kills the counting .exe
+    # Batch command that kills `C-Count.exe`
     shutdown_command = "taskkill /f /im C-Count.exe"
 
     # `subprocess.run()` takes the command argument as a list, so we have to do this
