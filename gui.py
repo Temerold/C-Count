@@ -6,6 +6,7 @@ import os
 import multitasking
 from termcolor import cprint
 
+
 root = tk.Tk()
 root.title("C-Count")
 root.geometry("320x500")
