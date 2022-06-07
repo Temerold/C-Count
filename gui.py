@@ -19,7 +19,6 @@ col.init()  # Initialize Colorama's text color-coding
 def shutdown_protocol():
     kill_counting()
     root.destroy()
-
     os._exit(0)
 
 
