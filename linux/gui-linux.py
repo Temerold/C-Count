@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+from PIL import ImageTk, Image
 import colorama as col
 import subprocess as sp
 import os
@@ -12,7 +13,9 @@ root.title("C-Count")
 root.geometry("320x500")
 root.resizable(width=False, height=False)
 root.minsize(320, 500)
-#root.iconbitmap("../src/logo.xbm")
+
+# TODO: Make icon colored
+root.iconphoto(True, ImageTk.PhotoImage(file=r"../src/logo.xbm"))
 
 col.init()  # Initialize Colorama's text color-coding
 
