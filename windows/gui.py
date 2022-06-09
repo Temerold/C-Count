@@ -171,7 +171,7 @@ def validate_input(name, action, new, old):
     else:
         # Go through the `old` and `new` character pairs, and check where they differ.
         # These are the rules for each recursion:
-        # We can always assume that `new` is longer than ´old´, because we're adding 1
+        # We can always assume that `new` is longer than `old`, because we're adding 1
         # character to `old` in `new`. So, if they differ on index `index`, we know
         # that the differing (the input) character is `new[index]`.
         # If `old`'s length is `index`, and `old[index]` and `new[index]` are the

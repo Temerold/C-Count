@@ -94,7 +94,7 @@ void count(int start, int end)
     }
 
     // Start counting at ´start´, and end at ´end´. If ´end´ is -1, the program will
-    // continue forever
+    // continue forever.
     for (int num = start; num <= (end) || end == -1; ++num)
     {
         printf("\n%d", num);
