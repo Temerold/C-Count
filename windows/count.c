@@ -75,7 +75,7 @@ void change_color(char color[])
 
 void count(int start, int end)
 {
-    // ´start´ is greater than ´end´ (´end´ can however be -1, which means infinity)
+    // `start` is greater than `end` (`end` can however be -1, which means infinity)
     if (end < start && end != -1)
     {
         change_color("red");
@@ -84,7 +84,7 @@ void count(int start, int end)
         change_color("white");
         exit(2);
     }
-    else if (start < 0) // ´start´ is negative
+    else if (start < 0) // `start` is negative
     {
         change_color("red");
         wait_for_newline("\nERROR: Invalid input! Start integer can't be a negative "
@@ -92,7 +92,7 @@ void count(int start, int end)
         change_color("white");
         exit(2);
     }
-    // ´end´ is negative (it can however be -1, which means infinity)
+    // `end` is negative (it can however be -1, which means infinity)
     else if (end < 0 && end != -1)
     {
         change_color("red");
@@ -103,7 +103,7 @@ void count(int start, int end)
         exit(2);
     }
 
-    // Start counting at ´start´, and end at ´end´. If ´end´ is -1, the program will
+    // Start counting at `start`, and end at `end`. If `end` is -1, the program will
     // continue forever
     for (int num = start; num <= (end) || end == -1; ++num)
     {
