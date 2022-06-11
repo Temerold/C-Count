@@ -1,11 +1,73 @@
 import tkinter as tk
 from tkinter import messagebox
-from PIL import ImageTk, Image
+from PIL import ImageTk
 import colorama as col
 import subprocess as sp
 import os
 import multitasking
 from termcolor import cprint
+
+# To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
+# error `pyinstaller` raises when we try to build with paths in `..`, we have to have
+# seperate paths, based on if the code has been built or not.
+# First of all: it raises this error when trying to build a Python program that tries to
+# access files locaded in `..`, in other words, the parent directory. However, there are
+# no parent directories to the .exe (`C-Count.exe`).*
+#
+# This is the directory structue according to the .py file (`gui.py`):
+# |   README.md
+# |
+# +---linux
+# |       build-linux.sh
+# |       count-linux.exe
+# |       count-linux.c
+# |       gui-linux.py
+# |
+# +---src
+# |       logo.ico
+# |       logo.png
+# |       logo.xbm
+# |       off.png
+# |       off_small.png
+# |       on.png
+# |       on_small.png
+# |
+# \---windows
+#        build.bat
+#        count.c
+#        count.exe
+#        gui.py
+#
+# So `..` takes the program to `C-Count-master` (or whatever the parent directory is
+# named).
+#
+# And this is what the directory looks like, according to the .exe (`C-Count.exe`):
+# |   count.exe
+# |   gui.exe
+# |   logo.ico
+# |   off_small.png
+# |   on_small.png
+# |   ... [More -- insignificant]
+#
+# *There is no `..`, since there is no parent directory inside of it.
+# So, we have to access files in `.` if it's been built.
+# However, we can't use `.`, because that is the .exe's directory. When the `pyinstaller`
+# .exe is ran, it creates a temp folder, in which it places all the files -- so, the .py
+# file, icons, images, and such. If it's been built, we have to access all the files from
+# the temp folder (`file_path`).
+file_path = os.path.dirname(os.path.abspath(__file__))
+
+if os.path.exists(file_path + "\\.exe_identifier"):
+    icon_path = file_path + "\\logo.ico"
+    off_path = file_path + "\\off_small.png"
+    on_path = file_path + "\\on_small.png"
+    count_path = file_path + "\\count.exe"
+
+else:
+    icon_path = "../src/logo.ico"
+    off_path = "../src/off_small.png"
+    on_path = "../src/on_small.png"
+    count_path = "/count.exe"
 
 
 root = tk.Tk()
@@ -15,7 +77,7 @@ root.resizable(width=False, height=False)
 root.minsize(320, 500)
 
 # TODO: Make icon colored
-root.iconphoto(True, ImageTk.PhotoImage(file=r"../src/logo.xbm"))
+root.iconphoto(True, ImageTk.PhotoImage(file="../src/logo.xbm"))
 
 col.init()  # Initialize Colorama's text color-coding
 
@@ -37,8 +99,8 @@ def raise_message(text, title="Error!", type="error"):
 
 
 def kill_counting():
-    # Shell command that kills `C-Count.exe`
-    shutdown_command = "pkill C-Count-linux"
+    # Shell command that kills `count.exe`
+    shutdown_command = "pkill count-linux"
 
     # `subprocess.run()` takes the command argument as a list, so we have to do this
     command_list = shutdown_command.split(" ")
@@ -270,7 +332,7 @@ class Image_button(tk.Button):
                 end = "-1"
 
             if run_checks(start, end):
-                c_program = sp.Popen(["./C-Count-linux.exe", start, end])
+                c_program = sp.Popen(["./count-linux.exe", start, end])
                 self.config(image=self.clicked_image)
                 c_program.communicate()[0]
                 return_code = c_program.returncode
