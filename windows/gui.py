@@ -1,20 +1,87 @@
+import sys
+import os
 import tkinter as tk
 from tkinter import messagebox
 import colorama as col
 import subprocess as sp
-import os
 import multitasking
 from termcolor import cprint
 
+
+# To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
+# error `pyinstaller` raises when we try to build with paths in `..`, we have to have
+# seperate paths, based on if the code has been built or not.
+# First of all: it raises this error when trying to build a Python program that tries to
+# access files locaded in `..`, in other words, the parent directory. However, there are
+# no parent directories to the .exe (`C-Count.exe`).*
+#
+# This is the directory structue according to the .py file (`gui.py`):
+# |   README.md
+# |
+# +---linux
+# |       build-linux.sh
+# |       count-linux.exe
+# |       count-linux.c
+# |       gui-linux.py
+# |
+# +---src
+# |       logo.ico
+# |       logo.png
+# |       logo.xbm
+# |       off.png
+# |       off_small.png
+# |       on.png
+# |       on_small.png
+# |
+# \---windows
+#        build.bat
+#        count.c
+#        count.exe
+#        gui.py
+#
+# So `..` takes the program to `C-Count-master` (or whatever the parent directory is
+# named).
+#
+# And this is what the directory looks like, according to the .exe (`C-Count.exe`):
+# |   count.exe
+# |   gui.exe
+# |   logo.ico
+# |   off_small.png
+# |   on_small.png
+# |   ... [More -- insignificant]
+#
+# *There is no `..`, since there is no parent directory inside of it.
+# So, we have to access files in `.` if it's been built.
+
+# However, we can't use `.`, because that is the .exe's directory. When the `pyinstaller`
+# .exe is ran, it creates a temp folder, in which it places all the files -- so, the .py
+# file, icons, images, and such. If it's been built, we have to access all the files from
+# the temp folder (`file_path`).
+if getattr(sys, "frozen", False):
+    file_path = sys._MEIPASS
+else:
+    file_path = os.path.dirname(os.path.abspath(__file__))
+
+if os.path.exists(file_path + "\\.exe_identifier"):
+    icon_path = file_path + "\\logo.ico"
+    off_path = file_path + "\\off_small.png"
+    on_path = file_path + "\\on_small.png"
+    count_path = file_path + "\\count.exe"
+
+else:
+    icon_path = "../src/logo.ico"
+    off_path = "../src/off_small.png"
+    on_path = "../src/on_small.png"
+    count_path = "./count.exe"
 
 root = tk.Tk()
 root.title("C-Count")
 root.geometry("320x500")
 root.resizable(width=False, height=False)
 root.minsize(320, 500)
-root.iconbitmap("../src/logo.ico")
+root.iconbitmap(icon_path)
 
-col.init()  # Initialize Colorama's text color-coding
+col.init()  # Initialize Colorama's text color coding
 
 
 def shutdown_protocol():
@@ -34,8 +101,8 @@ def raise_message(text, title="Error!", type="error"):
 
 
 def kill_counting():
-    # Batch command that kills `C-Count.exe`
-    shutdown_command = "taskkill /f /im C-Count.exe"
+    # Batch command that kills `count.exe`
+    shutdown_command = "taskkill /f /im count.exe"
 
     # `subprocess.run()` takes the command argument as a list, so we have to do this
     command_list = shutdown_command.split(" ")
@@ -137,8 +204,8 @@ def validate_input(name, action, new, old):
     """
     @ name: The name of the widget.
     @ action: Action code; "0" for an attempted deletion, "1" for an attempted insertion,
-            @ or "-1" if the callback was called for focus in, focus out, or a change to
-            @ the textvariable.
+    @         or "-1" if the callback was called for focus in, focus out, or a change to
+    @         the textvariable.
     @ new: The value that the text will have if the change is allowed.
     @ old: The text in the entry before the change.
     """
@@ -192,7 +259,8 @@ def validate_input(name, action, new, old):
     # individual character is legal anyways, so we can define (lie) `_input` as "0" (which
     # is in `allowed_chars`), so that it passes below.
     # ! IMPORTANT: If the `_input` variable's name changes, this if statement won't work,
-    # ! because it's looking for a variable named "_input"!
+    # ! because it's looking for a variable named "_input" So it it changes, change it
+    # ! here too!
     if "_input" not in locals():
         _input = "0"
 
@@ -267,7 +335,7 @@ class Image_button(tk.Button):
                 end = "-1"
 
             if run_checks(start, end):
-                c_program = sp.Popen(["./C-Count.exe", start, end])
+                c_program = sp.Popen([count_path, start, end])
                 self.config(image=self.clicked_image)
                 c_program.communicate()[0]
                 return_code = c_program.returncode
@@ -285,7 +353,7 @@ class Image_button(tk.Button):
         self.toggle_state = -1
 
 
-button = Image_button(root, "../src/off_small.png", "../src/on_small.png")
+button = Image_button(root, off_path, on_path)
 button.pack()
 
 # Start entry box validation command

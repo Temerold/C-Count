@@ -24,6 +24,7 @@ pyinstaller ^
 gui.py
 
 del /a:h .exe_identifier
+del gui.spec
 cd dist
 del C-Count.exe
 rename gui.exe C-Count.exe
