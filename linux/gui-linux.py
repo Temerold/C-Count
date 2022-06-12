@@ -391,3 +391,4 @@ inifnity_mode_check_button.bind("<Button-1>", infinity_mode_switch)
 
 root.protocol("WM_DELETE_WINDOW", shutdown_protocol)
 root.mainloop()
+# sussy baka
