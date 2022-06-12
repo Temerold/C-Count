@@ -20,6 +20,7 @@ from termcolor import cprint
 # |
 # +---linux
 # |       build-linux.sh
+# |       compile-linux.sh
 # |       count-linux.exe
 # |       count-linux.c
 # |       gui-linux.py
@@ -35,6 +36,7 @@ from termcolor import cprint
 # |
 # \---windows
 #        build.bat
+#        compile.bat
 #        count.c
 #        count.exe
 #        gui.py

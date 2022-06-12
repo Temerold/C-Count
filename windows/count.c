@@ -103,11 +103,27 @@ void count(int start, int end)
         exit(2);
     }
 
-    // Start counting at `start`, and end at `end`. If `end` is -1, the program will
-    // continue forever
-    for (int num = start; num <= (end) || end == -1; ++num)
+    // Here, we have this if-else statement, with different code based on if `end` is -1
+    // or not. Yes, we could just have one single for loop, which would continue forever
+    // if `end` is -1. That, however, would be inefficient; checking if `end` is -1 every
+    // recursion -- it's not going to change, so why check? Instead, we have a separate
+    // never-ending while loop if `end` is -1, and it'll never stop and check `end`'s
+    // value.
+    if (end == -1)
     {
-        printf("\n%d", num);
+        int num = start;
+        while (1)
+        {
+            printf("\n%d", num);
+            num += 1;
+        }
+    }
+    else
+    {
+        for (int num = start; num <= end;)
+        {
+            printf("\n%d", num);
+        }
     }
 }
 
