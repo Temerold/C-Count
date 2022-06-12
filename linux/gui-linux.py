@@ -7,6 +7,7 @@ import os
 import multitasking
 from termcolor import cprint
 
+
 # To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
 # error `pyinstaller` raises when we try to build with paths in `..`, we have to have
 # seperate paths, based on if the code has been built or not.
