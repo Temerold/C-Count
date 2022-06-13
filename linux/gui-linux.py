@@ -112,7 +112,6 @@ def kill_counting():
 
 def run_checks(start, end, change_color_on_error=True, show_message_box_on_error=True):
     ## Check if entry boxes are empty. If so, return False.
-
     if start == "" and change_color_on_error:
         start_entry.config({"background": "red"})
         start_entry.config({"foreground": "white"})
@@ -391,4 +390,3 @@ inifnity_mode_check_button.bind("<Button-1>", infinity_mode_switch)
 
 root.protocol("WM_DELETE_WINDOW", shutdown_protocol)
 root.mainloop()
-# sussy baka
