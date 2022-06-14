@@ -110,7 +110,7 @@ void count(int start, int end)
     }
     else
     {
-        for (int num = start; num <= end;)
+        for (int num = start; num <= end; num++)
         {
             printf("\n%d", num);
         }
