@@ -1,7 +1,3 @@
-todo:
-  keyword: "TODO:"
-  bodyKeyword: "BODY:"
-
 newIssueWelcomeComment: >
   Thanks for opening your first issue here!
 
