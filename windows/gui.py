@@ -10,7 +10,7 @@ from termcolor import cprint
 
 # To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
 # error `pyinstaller` raises when we try to build with paths in `..`, we have to have
-# seperate paths, based on if the code has been built or not.
+# separate paths, based on if the code has been built or not.
 # First of all: it raises this error when trying to build a Python program that tries to
 # access files locaded in `..`, in other words, the parent directory. However, there are
 # no parent directories to the .exe (`C-Count.exe`).*
@@ -206,7 +206,7 @@ def validate_input(name, action, new, old):
     @ name: The name of the widget.
     @ action: Action code; "0" for an attempted deletion, "1" for an attempted insertion,
     @         or "-1" if the callback was called for focus in, focus out, or a change to
-    @         the textvariable.
+    @         the `textvariable`.
     @ new: The value that the text will have if the change is allowed.
     @ old: The text in the entry before the change.
     """
