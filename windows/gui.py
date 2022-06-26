@@ -5,8 +5,8 @@ from tkinter import messagebox
 import colorama as col
 import subprocess as sp
 import multitasking
+from contextlib import suppress
 from termcolor import cprint
-
 
 # To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
 # error `pyinstaller` raises when we try to build with paths in `..`, we have to have
@@ -128,10 +128,10 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
         return False
 
     ## Check if start integer is greater than end integer. If so, return False.
-    # Use try except, in case conversion of `start` and `end` to integers fail, due to
-    # them not being numbers.
-    try:
-        if int(start) > int(end) and end != "-1" and end != "":
+    # Use `contextlib.suppress(ValueError)`, in case conversion of `start` and `end` to
+    # integers fail, due to them not being numbers.
+    with suppress(ValueError):
+        if int(start) > int(end) and end != "-1":
             if show_message_box_on_error:
                 raise_message(
                     "Invalid input! Start integer can't be greater than end integer."
@@ -142,8 +142,6 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
                 start_entry.config({"foreground": "white"})
 
             return False
-    except ValueError:
-        pass
 
     ## Check if end "integer" is "-". If so, return False.
     if change_color_on_error and end == "-":
