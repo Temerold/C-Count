@@ -1,4 +1,0 @@
-colorama==0.4.5
-multitasking==0.0.11
-Pillow==9.1.1
-termcolor==1.1.0

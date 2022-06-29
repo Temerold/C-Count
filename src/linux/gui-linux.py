@@ -15,19 +15,21 @@ from termcolor import cprint
 # seperate paths, based on if the code has been built or not.
 # First of all: it raises this error when trying to build a Python program that tries to
 # access files locaded in `..`, in other words, the parent directory. However, there are
-# no parent directories to the .exe (`C-Count.exe`).*
+# no parent directories to the .exe (`C-Count-Linux.exe`).*
 #
-# This is the directory structue according to the .py file (`gui.py`):
-# |   README.md
-# |
+# This is the directory structue according to the .py file (`gui-linux.py`):
 # +---linux
 # |       build-linux.sh
 # |       compile-linux.sh
-# |       count-linux.exe
 # |       count-linux.c
+# |       count-linux.exe
+# |       generate_requirements-linux.bat
+# |       generate_requirements-linux.sh
 # |       gui-linux.py
+# |       install_requirements-linux.sh
+# |       requirements.txt
 # |
-# +---src
+# +---media
 # |       logo.ico
 # |       logo.png
 # |       logo.xbm
@@ -37,16 +39,19 @@ from termcolor import cprint
 # |       on_small.png
 # |
 # \---windows
-#        build.bat
-#        compile.bat
-#        count.c
-#        count.exe
-#        gui.py
+#         build.bat
+#         compile.bat
+#         count.c
+#         count.exe
+#         generate_requirements.bat
+#         generate_requirements.sh
+#         gui.py
+#         install_requirements.bat
+#         requirements.txt
 #
-# So `..` takes the program to `C-Count-master` (or whatever the parent directory is
-# named).
+# So `..` takes the program to `src`.
 #
-# And this is what the directory looks like, according to the .exe (`C-Count.exe`):
+# And this is what the directory looks like, according to the .exe (`C-Count-Linux.exe`):
 # |   count.exe
 # |   gui.exe
 # |   logo.ico

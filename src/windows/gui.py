@@ -16,16 +16,18 @@ from termcolor import cprint
 # no parent directories to the .exe (`C-Count.exe`).*
 #
 # This is the directory structue according to the .py file (`gui.py`):
-# |   README.md
-# |
 # +---linux
 # |       build-linux.sh
 # |       compile-linux.sh
-# |       count-linux.exe
 # |       count-linux.c
+# |       count-linux.exe
+# |       generate_requirements-linux.bat
+# |       generate_requirements-linux.sh
 # |       gui-linux.py
+# |       install_requirements-linux.sh
+# |       requirements.txt
 # |
-# +---src
+# +---media
 # |       logo.ico
 # |       logo.png
 # |       logo.xbm
@@ -35,14 +37,17 @@ from termcolor import cprint
 # |       on_small.png
 # |
 # \---windows
-#        build.bat
-#        compile.bat
-#        count.c
-#        count.exe
-#        gui.py
+#         build.bat
+#         compile.bat
+#         count.c
+#         count.exe
+#         generate_requirements.bat
+#         generate_requirements.sh
+#         gui.py
+#         install_requirements.bat
+#         requirements.txt
 #
-# So `..` takes the program to `C-Count-master` (or whatever the parent directory is
-# named).
+# So `..` takes the program to `src`.
 #
 # And this is what the directory looks like, according to the .exe (`C-Count.exe`):
 # |   count.exe
@@ -69,9 +74,9 @@ if os.path.exists(file_path + "\\.exe_identifier"):
     off_path = file_path + "\\off_small.png"
     on_path = file_path + "\\on_small.png"
 else:
-    icon_path = file_path + "\\..\\src\\logo.ico"
-    off_path = file_path + "\\..\\src\\off_small.png"
-    on_path = file_path + "\\..\\src\\on_small.png"
+    icon_path = file_path + "\\..\\media\\logo.ico"
+    off_path = file_path + "\\..\\media\\off_small.png"
+    on_path = file_path + "\\..\\media\\on_small.png"
 
 count_path = file_path + "\\count.exe"
 
