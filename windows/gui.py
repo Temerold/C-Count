@@ -1,3 +1,4 @@
+from sqlite3 import SQLITE_CREATE_TEMP_TRIGGER
 import sys
 import os
 import tkinter as tk
@@ -71,10 +72,10 @@ if os.path.exists(file_path + "\\.exe_identifier"):
     count_path = file_path + "\\count.exe"
 
 else:
-    icon_path = "../src/logo.ico"
-    off_path = "../src/off_small.png"
-    on_path = "../src/on_small.png"
-    count_path = "./count.exe"
+    icon_path = file_path + "\\..\\src\\logo.ico"
+    off_path = file_path + "\\..\\src\\off_small.png"
+    on_path = file_path + "\\..\\src\\on_small.png"
+    count_path = file_path + "\\count.exe"
 
 root = tk.Tk()
 root.title("C-Count")
