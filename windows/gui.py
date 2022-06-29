@@ -1,4 +1,3 @@
-from sqlite3 import SQLITE_CREATE_TEMP_TRIGGER
 import sys
 import os
 import tkinter as tk

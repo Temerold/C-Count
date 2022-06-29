@@ -1,7 +1,9 @@
+import sys
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageTk
 import colorama as col
+import contextlib
 import subprocess as sp
 import os
 import multitasking
@@ -54,11 +56,15 @@ from termcolor import cprint
 #
 # *There is no `..`, since there is no parent directory inside of it.
 # So, we have to access files in `.` if it's been built.
+
 # However, we can't use `.`, because that is the .exe's directory. When the `pyinstaller`
 # .exe is ran, it creates a temp folder, in which it places all the files -- so, the .py
 # file, icons, images, and such. If it's been built, we have to access all the files from
 # the temp folder (`file_path`).
-file_path = os.path.dirname(os.path.abspath(__file__))
+if getattr(sys, "frozen", False):
+    file_path = sys._MEIPASS
+else:
+    file_path = os.path.dirname(os.path.abspath(__file__))
 
 if os.path.exists(file_path + "\\.exe_identifier"):
     icon_path = file_path + "\\logo.ico"
@@ -67,10 +73,10 @@ if os.path.exists(file_path + "\\.exe_identifier"):
     count_path = file_path + "\\count.exe"
 
 else:
-    icon_path = "../src/logo.ico"
-    off_path = "../src/off_small.png"
-    on_path = "../src/on_small.png"
-    count_path = "/count.exe"
+    icon_path = file_path + "\\..\\src\\logo.ico"
+    off_path = file_path + "\\..\\src\\off_small.png"
+    on_path = file_path + "\\..\\src\\on_small.png"
+    count_path = file_path + "\\count.exe"
 
 
 root = tk.Tk()
@@ -129,8 +135,8 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
     ## Check if start integer is greater than end integer. If so, return False.
     # Use try except, in case conversion of `start` and `end` to integers fail, due to
     # them not being numbers.
-    try:
-        if int(start) > int(end) and end != "-1" and end != "":
+    with contextlib.suppress(ValueError):
+        if int(start) > int(end) and end != "-1":
             if show_message_box_on_error:
                 raise_message(
                     "Invalid input! Start integer can't be greater than end integer."
@@ -141,9 +147,6 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
                 start_entry.config({"foreground": "white"})
 
             return False
-    except ValueError:
-        pass
-
     ## Check if end "integer" is "-". If so, return False.
     if change_color_on_error and end == "-":
         raise_message("Invalid input! End integer can't be only a minus.")
