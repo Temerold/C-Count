@@ -89,7 +89,7 @@ root.resizable(width=False, height=False)
 root.minsize(320, 500)
 
 # TODO: Make icon colored
-root.iconphoto(True, ImageTk.PhotoImage(file="../src/logo.xbm"))
+root.iconphoto(True, ImageTk.PhotoImage(file=icon_path))
 
 col.init()  # Initialize Colorama's text color-coding
 
@@ -218,11 +218,11 @@ def validate_input(name, action, new, old):
 
     allowed_chars = "0123456789-"
 
-    ## Check if attempted action is deletion. If so, allow it.
+    ## Check if attempted action is deletion. If so, return True.
     if action == "0":
         return True
 
-    ## Check if input is "Infinity". If so, allow it.
+    ## Check if input is "Infinity". If so, return True.
     if name == "end" and new == "Infinity":
         return True
 
@@ -272,7 +272,7 @@ def validate_input(name, action, new, old):
     if _input not in allowed_chars:
         return False
 
-    ## Check if value is going to be (or be able to become) "-1". If so, allow it.
+    ## Check if value is going to be (or be able to become) "-1". If so, return True.
     if name == "end" and new == "-1":
         infinity_mode_switch()
         inifnity_mode_check_button.select()
@@ -358,7 +358,7 @@ class Image_button(tk.Button):
         self.toggle_state = -1
 
 
-button = Image_button(root, "../src/off_small.png", "../src/on_small.png")
+button = Image_button(root, off_path, on_path)
 button.pack()
 
 # Start entry box validation command
