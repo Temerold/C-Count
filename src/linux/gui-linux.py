@@ -347,6 +347,8 @@ class Image_button(tk.Button):
                 return_code = c_program.returncode
                 if return_code == 0:
                     cprint("\nSuccess!", "green")
+                else:
+                    cprint("\nError!", "red")
 
                 self.config(image=self.unclicked_image)
 
