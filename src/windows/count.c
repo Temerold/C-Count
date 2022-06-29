@@ -127,9 +127,7 @@ void count(int start, int end)
     }
 }
 
-void start_up(void) __attribute__((constructor));
-
-void start_up(void)
+void start_up(void) __attribute__((constructor))
 {
     HWND consoleWnd = GetConsoleWindow();
     DWORD dwProcessId;
