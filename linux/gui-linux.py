@@ -70,14 +70,12 @@ if os.path.exists(file_path + "\\.exe_identifier"):
     icon_path = file_path + "\\logo.ico"
     off_path = file_path + "\\off_small.png"
     on_path = file_path + "\\on_small.png"
-    count_path = file_path + "\\count.exe"
-
 else:
     icon_path = file_path + "\\..\\src\\logo.ico"
     off_path = file_path + "\\..\\src\\off_small.png"
     on_path = file_path + "\\..\\src\\on_small.png"
-    count_path = file_path + "\\count.exe"
 
+count_path = file_path + "\\count.exe"
 
 root = tk.Tk()
 root.title("C-Count")
