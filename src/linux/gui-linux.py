@@ -265,7 +265,8 @@ def validate_input(name, action, new, old):
     # individual character is legal anyways, so we can define (lie) `_input` as "0" (which
     # is in `allowed_chars`), so that it passes below.
     # ! IMPORTANT: If the `_input` variable's name changes, this if statement won't work,
-    # ! because it's looking for a variable named "_input"!
+    # ! because it's looking for a variable named "_input". So if it changes, change it
+    # ! here too!
     if "_input" not in locals():
         _input = "0"
 
