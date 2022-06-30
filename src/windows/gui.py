@@ -66,17 +66,17 @@ from termcolor import cprint
 # the temp folder (`file_path`).
 if getattr(sys, "frozen", False):  # If standalone
     file_path = sys._MEIPASS
-    icon_path = file_path + "\\logo.ico"
-    off_path = file_path + "\\off_small.png"
-    on_path = file_path + "\\on_small.png"
+    icon_path = f"{file_path}\\logo.ico"
+    off_path = f"{file_path}\\off_small.png"
+    on_path = f"{file_path}\\on_small.png"
 
 else:  # If not a standalone
     file_path = os.path.dirname(os.path.abspath(__file__))
-    icon_path = file_path + "\\..\\media\\logo.ico"
-    off_path = file_path + "\\..\\media\\off_small.png"
-    on_path = file_path + "\\..\\media\\on_small.png"
+    icon_path = f"{file_path}\\..\\media\\logo.ico"
+    off_path = f"{file_path}\\..\\media\\off_small.png"
+    on_path = f"{file_path}\\..\\media\\on_small.png"
 
-count_path = file_path + "\\count.exe"
+count_path = f"{file_path}\\count.exe"
 
 root = tk.Tk()
 root.title("C-Count")
