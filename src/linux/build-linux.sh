@@ -3,13 +3,6 @@
 
 sudo gcc count-linux.c -o count-linux.exe
 
-sudo touch exe_identifier.txt
-echo "This file exists so that a potential .exe file can verify that it, in fact, is an .exe" >> exe_identifier.txt
-echo "file. It does this by checking if this file exists in its `.` directory. If it does, it" >> exe_identifier.txt
-echo "means that it's been built inside of the .exe ... or that someone has placed it in its" >> exe_identifier.txt
-echo "directory. Until we find a better solution, just don't name anything `exe_identifier.txt`," >> exe_identifier.txt
-echo "and then place it in the program's directory..." >> exe_identifier.txt
-
 sudo pyinstaller \
 --onefile \
 --icon=../media/logo.ico \
@@ -17,7 +10,6 @@ sudo pyinstaller \
 --add-data ../media/on_small.png:. \
 --add-data ../media/off_small.png:. \
 --add-data count-linux.exe:. \
---add-data exe_identifier.txt:. \
 --clean \
 --exclude-module _bootlocale \
 gui-linux.py

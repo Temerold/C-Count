@@ -62,23 +62,21 @@ from termcolor import cprint
 # *There is no `..`, since there is no parent directory inside of it.
 # So, we have to access files in `.` if it's been built.
 
-# However, we can't use `.`, because that is the .exe's directory. When the `pyinstaller`
+# However, we can't use `.`, because that is the .exe's directory. When the pyinstaller
 # .exe is ran, it creates a temp folder, in which it places all the files -- so, the .py
 # file, icons, images, and such. If it's been built, we have to access all the files from
 # the temp folder (`file_path`).
-if getattr(sys, "frozen", False):
+if getattr(sys, "frozen", False):  # If standalone
     file_path = sys._MEIPASS
-else:
-    file_path = os.path.dirname(os.path.abspath(__file__))
-
-if os.path.exists(file_path + "\\.exe_identifier"):
     icon_path = file_path + "\\logo.ico"
     off_path = file_path + "\\off_small.png"
     on_path = file_path + "\\on_small.png"
-else:
-    icon_path = file_path + "\\..\\src\\logo.ico"
-    off_path = file_path + "\\..\\src\\off_small.png"
-    on_path = file_path + "\\..\\src\\on_small.png"
+
+else:  # If not a standalone
+    file_path = os.path.dirname(os.path.abspath(__file__))
+    icon_path = file_path + "\\..\\media\\logo.ico"
+    off_path = file_path + "\\..\\media\\off_small.png"
+    on_path = file_path + "\\..\\media\\on_small.png"
 
 count_path = file_path + "\\count.exe"
 
