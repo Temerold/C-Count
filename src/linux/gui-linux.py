@@ -212,15 +212,14 @@ def validate_input(name, action, new, old):
     @ old: The text in the entry before the change.
     """
 
-    allowed_chars = "0123456789-"
+    allowed_inputs = list("0123456789-")
+    allowed_inputs.extend(["Infinity", "-1"])
 
     ## Check if attempted action is deletion. If so, return True.
     if action == "0":
         return True
-
-    ## Check if input is "Infinity". If so, return True.
-    if name == "end" and new == "Infinity":
-        return True
+    elif action != "1":
+        return False
 
     ## Check if the input is longer than 1 character. If so, break it up into several
     ## `validate_input()` calls.
@@ -228,11 +227,8 @@ def validate_input(name, action, new, old):
     # characters gets through.
     if len(new) - len(old) > 1:
         for char in new:
-            if not validate_input(name, "1", char, ""):
+            if char not in allowed_inputs:
                 return False
-
-    if action != "1":
-        return False
 
     # `_input` is what character has been typed
     if len(new) == 1:
@@ -259,14 +255,14 @@ def validate_input(name, action, new, old):
     # If `_input` doesn't exist, it means that `validate_input()` has recieved a
     # longer-than-1-character input. If it continued to here, it means that each
     # individual character is legal anyways, so we can define (lie) `_input` as "0" (which
-    # is in `allowed_chars`), so that it passes below.
+    # is in `allowed_inputs`), so that it passes below.
     # ! IMPORTANT: If the `_input` variable's name changes, this if statement won't work,
     # ! because it's looking for a variable named "_input". So if it changes, change it
     # ! here too!
     if "_input" not in locals():
         _input = "0"
 
-    if _input not in allowed_chars:
+    if _input not in allowed_inputs:
         return False
 
     ## Check if value is going to be (or be able to become) "-1". If so, return True.

@@ -4,11 +4,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-  - package-ecosystem: "pip"
-    directory: "/linux/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "pip"
-    directory: "/windows/"
-    schedule:
-      interval: "daily"
