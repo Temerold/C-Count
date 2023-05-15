@@ -131,7 +131,7 @@ void count(unsigned int start, unsigned int end)
 // This function runs automatically every time the program is ran. If the program is ran
 // as a standalone, it will run without a GUI, asking for a start and end number.
 // * In Visual Studio Code, the following line gets partly underlined with red by
-// * IntelliSense, but compiles correctly. This is a documented bug:
+// * IntelliSense, but compiles and runs correctly. This is a documented bug:
 // * https://developercommunity.visualstudio.com/t/cc-intellisense-in-gccclang-mode-shows-attribute-c/796872
 void __attribute__((constructor)) start_up(void)
 {
