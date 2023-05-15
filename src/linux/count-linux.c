@@ -65,7 +65,7 @@ void change_color(char color[])
     }
 }
 
-void count(int start, int end)
+void count(unsigned int start, unsigned int end)
 {
     // ´start´ is greater than ´end´ (´end´ can however be -1, which means infinity)
     if (end < start && end != -1)
@@ -102,7 +102,7 @@ void count(int start, int end)
     // value.
     if (end == -1)
     {
-        int num = start;
+        unsigned int num = start;
         while (1)
         {
             printf("\n%d", num);
@@ -111,7 +111,7 @@ void count(int start, int end)
     }
     else
     {
-        for (int num = start; num <= end; num++)
+        for (unsigned int num = start; num <= end; num++)
         {
             printf("\n%d", num);
         }
@@ -120,7 +120,7 @@ void count(int start, int end)
 
 int main(int argc, char *argv[])
 {
-    if (argc > 3) // More than 3 arguments
+    if (argc > 3) // More than 2 arguments
     {
         change_color("red");
         printf("ERROR: Too many arguments! The maximum is 2; start integer and end "
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         change_color("white");
         exit(2);
     }
-    else if (argc < 3) // Less than 3 arguments
+    else if (argc < 3) // Less than 2 arguments
     {
         change_color("red");
         printf("ERROR: Missing argument(s)! Requires both start integer and end integer."
