@@ -271,7 +271,7 @@ def validate_input(name, action, new, old):
     ## Check if value is going to be (or be able to become) "-1". If so, return True.
     if name == "end" and new == "-1":
         infinity_mode_switch()
-        inifnity_mode_check_button.select()
+        infinity_mode_check_button.select()
 
         return True
 
@@ -380,15 +380,15 @@ end_entry = tk.Entry(frame)
 end_entry.grid(row=1, column=1, sticky="w")
 end_entry.config(validate="key", validatecommand=end_vcmd)
 
-inifnity_mode_check_button = tk.Checkbutton(
+infinity_mode_check_button = tk.Checkbutton(
     frame,
     text="Infinity mode",
     variable=infinity_mode,
     onvalue=True,
     offvalue=False,
 )
-inifnity_mode_check_button.grid(row=2, column=1, sticky="w")
-inifnity_mode_check_button.bind("<Button-1>", infinity_mode_switch)
+infinity_mode_check_button.grid(row=2, column=1, sticky="w")
+infinity_mode_check_button.bind("<Button-1>", infinity_mode_switch)
 
 root.protocol("WM_DELETE_WINDOW", shutdown_protocol)
 root.mainloop()
