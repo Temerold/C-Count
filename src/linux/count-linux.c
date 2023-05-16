@@ -27,21 +27,21 @@ void wait_for_newline(char *text)
     }
 }
 
-int digits_only(const char s[])
+int is_int(const char s[])
 {
-    if (strcmp(s, "-1") == 0)
+    if (strcmp(s, "-1") == 0) // If string equals "-1"
     {
         return 1;
     }
-    else
-        while (*s)
-        {
-            if (isdigit(*s++) == 0)
-            {
-                return 0;
-            }
-        }
 
+    // Loop through characters, return 0 if non-integer found
+    for (size_t i; s[i] != '\0'; i++)
+    {
+        if (!isdigit(s[i]))
+        {
+            return 0;
+        }
+    }
     return 1;
 }
 

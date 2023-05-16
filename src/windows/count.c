@@ -27,21 +27,21 @@ void wait_for_newline(char *text)
     }
 }
 
-int digits_only(const char s[])
+int is_int(const char s[])
 {
-    if (strcmp(s, "-1") == 0)
+    if (strcmp(s, "-1") == 0) // If string equals "-1"
     {
         return 1;
     }
-    else
-        while (*s)
-        {
-            if (isdigit(*s++) == 0)
-            {
-                return 0;
-            }
-        }
 
+    // Loop through characters, return 0 if non-integer found
+    for (size_t i; s[i] != '\0'; i++)
+    {
+        if (!isdigit(s[i]))
+        {
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -129,18 +129,16 @@ void count(unsigned int start, unsigned int end)
 
 // This function runs automatically every time the program is ran. If the program is ran
 // as a standalone, it will run without a GUI, asking for a start and end number.
-// * In Visual Studio Code, the following line gets partly underlined with red by
-// * IntelliSense, but compiles and runs correctly. This is a documented bug:
+// * In Visual Studio Code, the following line gets marked as an error, but compiles and
+// * runs correctly. This is a documented bug:
 // * https://developercommunity.visualstudio.com/t/cc-intellisense-in-gccclang-mode-shows-attribute-c/796872
 void __attribute__((constructor)) start_up(void)
 {
-    HWND consoleWnd = GetConsoleWindow();
     DWORD dwProcessId;
-    GetWindowThreadProcessId(consoleWnd, &dwProcessId);
+    GetWindowThreadProcessId(GetConsoleWindow(), &dwProcessId);
     if (GetCurrentProcessId() == dwProcessId) // If ran as a standalone
     {
-        unsigned int start;
-        unsigned int end;
+        unsigned int start, end;
 
         printf("Start at: ");
         scanf("%d", &start);
@@ -171,7 +169,7 @@ int main(int argc, char *argv[])
         change_color("white");
         exit(2);
     }
-    else if (digits_only(argv[1]) == 0 || digits_only(argv[2]) == 0)
+    else if (is_int(argv[1]) == 0 || is_int(argv[2]) == 0)
     {
         change_color("red");
         printf("ERROR: Invalid input! Start integer and end integer must be entirely "
