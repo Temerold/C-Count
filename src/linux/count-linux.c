@@ -27,7 +27,7 @@ void wait_for_newline(char *text)
     }
 }
 
-int is_int(const char s[])
+int is_valid_input(const char s[])
 {
     if (strcmp(s, "-1") == 0) // If string equals "-1"
     {
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
         change_color("white");
         exit(2);
     }
-    else if (digits_only(argv[1]) == 0 || digits_only(argv[2]) == 0)
+    else if (is_valid_input(argv[1]) == 0 || is_valid_input(argv[2]) == 0)
     {
         change_color("red");
         printf("ERROR: Invalid input! Start integer and end integer must be entirely "
