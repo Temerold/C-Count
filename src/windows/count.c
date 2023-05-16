@@ -120,8 +120,7 @@ void count(unsigned int start, unsigned int end)
     }
     else
     {
-        unsigned int num;
-        for (num = start; num <= end; num++)
+        for (unsigned int num = start; num <= end; num++)
         {
             printf("\n%d", num);
         }
