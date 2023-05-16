@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
         change_color("white");
         exit(2);
     }
-    else if (argc < 3) // Less than 2 arguments
+    else if (argc < 3) // Fewer than 2 arguments
     {
         change_color("red");
         printf("ERROR: Missing argument(s)! Requires both start integer and end integer."
