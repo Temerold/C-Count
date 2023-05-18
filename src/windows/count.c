@@ -20,10 +20,10 @@ void pause()
     getch(); // Wait for key input, then continue
 }
 
-void error(char *s)
+void error(char *msg)
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    // Save terminal text color, to later revert back to them.
+    // Save terminal text attributes, to later revert back to them
     CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
     GetConsoleScreenBufferInfo(hConsole, &consoleInfo);
     WORD saved_attributes = consoleInfo.wAttributes;
@@ -31,10 +31,9 @@ void error(char *s)
     // Set terminal text color to red
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
 
-    printf(s);
+    printf(msg); // Print error message
 
-    // Set terminal text color to original attributes
-    SetConsoleTextAttribute(hConsole,
+    SetConsoleTextAttribute(hConsole, // Revert terminal text to its original attributes
                             saved_attributes);
 
     pause();
@@ -43,26 +42,26 @@ void error(char *s)
 
 int validate_nums(unsigned long start, unsigned long end)
 {
-    // `start` is greater than `end` (`end` can however be -1, which means infinity)
-    if (end < start && end != -1)
+    // `start` greater than `end` (-1 meaning infinity; then start's smaller)
+    if (start < end && end != -1)
     {
-        error(
-            "ERROR: Invalid input! Start integer can't be greater than end integer.\n");
+        error("ERROR: Invalid input! Start integer can't be greater than end integer.\n");
     }
-    else if (start < 1) // `start` isn't positive
+    else if (start < 1) // `start` not positive
     {
         error("ERROR: Invalid input! Start integer must be a positive number.\n");
     }
-    else if (end < 1 && end != -1) // `end` isn't positive or -1
+    else if (end < 1 && end != -1) // `end` not positive or -1 (infinity)
     {
         error("ERROR: Invalid input! End integer must be a positive number (or -1, "
               "meaning infinity).\n");
     }
-    return 1;
 }
 
 void count(unsigned long start, unsigned long end)
 {
+    // `validate_nums()` exits the program with an error code of 2 if an error is
+    // encountered. If nothing's wrong, it does nothing.
     validate_nums(start, end);
 
     // Here, we have this if-else statement, with different code based on if `end` is -1
@@ -84,14 +83,14 @@ void count(unsigned long start, unsigned long end)
     {
         for (unsigned long num = start; num <= end; num++)
         {
-            printf("\n#%d", num);
+            printf("\n%d", num);
         }
     }
 }
 
 int is_integer(char s[])
 {
-    if (strcmp(s, "-1") == 0) // If string equals "-1"
+    if (strcmp(s, "-1") == 0) // String doesn't equal "-1"
     {
         return 1;
     }
@@ -117,7 +116,7 @@ void __attribute__((constructor)) start_up(void)
     SetConsoleTitle("C-Count");
     DWORD dwProcessId;
     GetWindowThreadProcessId(GetConsoleWindow(), &dwProcessId);
-    if (GetCurrentProcessId() == dwProcessId) // If ran as a standalone
+    if (GetCurrentProcessId() == dwProcessId) // Ran as standalone
     {
         unsigned long start, end;
 
@@ -134,12 +133,12 @@ void __attribute__((constructor)) start_up(void)
 
 int main(int argc, char *argv[])
 {
-    if (argc > 3) // More than 2 arguments
+    if (argc > 3) // More than two arguments
     {
         error("ERROR: Too many arguments! The maximum is 2; start integer and end "
               "integer.\n");
     }
-    else if (argc < 3) // Fewer than 2 arguments
+    else if (argc < 3) // Fewer than two arguments
     {
         error("ERROR: Missing argument(s)! Requires both start integer and end integer."
               "\n");
