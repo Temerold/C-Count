@@ -1,3 +1,4 @@
+# ! Reorder these!
 import sys
 import os
 import tkinter as tk
@@ -7,6 +8,7 @@ import subprocess as sp
 import multitasking
 from contextlib import suppress
 from termcolor import cprint
+import ctypes
 
 # To avoid the "Security-Alert: try to store file outside of dist-directory. Aborting."
 # error `pyinstaller` raises when we try to build with paths in `..`, we have to have
@@ -80,10 +82,11 @@ count_path = f"{file_path}\\count.exe"
 
 root = tk.Tk()
 root.title("C-Count")
+os.system("title C-Count")
+root.iconbitmap(icon_path)
 root.geometry("320x500")
 root.resizable(width=False, height=False)
 root.minsize(320, 500)
-root.iconbitmap(icon_path)
 
 col.init()  # Initialize Colorama's text color coding
 
@@ -101,7 +104,8 @@ def raise_message(text, title="Error!", type="error"):
     elif type == "warning":
         messagebox.showwarning(title, text)
     else:
-        raise_message('`raise_message()` only accepts types "error" and "warning"!')
+        raise_message(
+            '`raise_message()` only accepts types "error" and "warning"!')
 
 
 def kill_counting():
@@ -110,11 +114,12 @@ def kill_counting():
 
     # `subprocess.run()` takes the command argument as a list, so we have to do this
     command_list = shutdown_command.split(" ")
-    sp.run(command_list, stdout=sp.DEVNULL)  # `stdout=sp.DEVNULL` mutes the output
+    # `stdout=sp.DEVNULL` mutes the output
+    sp.run(command_list, stdout=sp.DEVNULL)
 
 
 def run_checks(start, end, change_color_on_error=True, show_message_box_on_error=True):
-    ## Check if entry boxes are empty. If so, return False.
+    # Check if entry boxes are empty. If so, return False.
     if start == "" and change_color_on_error:
         start_entry.config({"background": "red"})
         start_entry.config({"foreground": "white"})
@@ -126,10 +131,14 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
     if start == "" or end == "":
         if show_message_box_on_error:
             raise_message("Invalid input! Entry boxes can't be empty.")
+    elif start == 0 or end == 0:
+        if show_message_box_on_error:
+            raise_message(
+                "Invalid input! Entry boxes' values must be positive.")
 
         return False
 
-    ## Check if start integer is greater than end integer. If so, return False.
+    # Check if start integer is greater than end integer. If so, return False.
     # Use `contextlib.suppress(ValueError)`, in case conversion of `start` and `end` to
     # integers fail, due to them not being numbers.
     with suppress(ValueError):
@@ -145,7 +154,7 @@ def run_checks(start, end, change_color_on_error=True, show_message_box_on_error
 
             return False
 
-    ## Check if end "integer" is "-". If so, return False.
+    # Check if end "integer" is "-". If so, return False.
     if change_color_on_error and end == "-":
         raise_message("Invalid input! End integer can't be only a minus.")
         end_entry.config({"background": "red"})
@@ -213,16 +222,16 @@ def validate_input(name, action, new, old):
 
     allowed_chars = "0123456789-"
 
-    ## Check if attempted action is deletion. If so, return True.
+    # Check if attempted action is deletion. If so, return True.
     if action == "0":
         return True
 
-    ## Check if input is "Infinity". If so, return True.
+    # Check if input is "Infinity". If so, return True.
     if name == "end" and new == "Infinity":
         return True
 
-    ## Check if the input is longer than 1 character. If so, break it up into several
-    ## `validate_input()` calls.
+    # Check if the input is longer than 1 character. If so, break it up into several
+    # `validate_input()` calls.
     # Go through `new`, and check for illegal characters. If any are found, none of the
     # characters gets through.
     if len(new) - len(old) > 1:
@@ -268,7 +277,7 @@ def validate_input(name, action, new, old):
     if _input not in allowed_chars:
         return False
 
-    ## Check if value is going to be (or be able to become) "-1". If so, return True.
+    # Check if value is going to be (or be able to become) "-1". If so, return True.
     if name == "end" and new == "-1":
         infinity_mode_switch()
         infinity_mode_check_button.select()
@@ -358,7 +367,8 @@ button = Image_button(root, off_path, on_path)
 button.pack()
 
 # Start entry box validation command
-start_vcmd = (root.register(entry_vcmd_while_typing), "start", "%d", "%P", "%s")
+start_vcmd = (root.register(entry_vcmd_while_typing),
+              "start", "%d", "%P", "%s")
 
 # End entry box validation command
 end_vcmd = (root.register(entry_vcmd_while_typing), "end", "%d", "%P", "%s")

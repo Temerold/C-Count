@@ -10,7 +10,7 @@
 
 // ! IMPORTANT: Remember to run the `compile-linux.sh` script when `count-linux.c` (this
 // ! file) is altered -- to compile it -- and then add the .exe (`C-Count-Linux.exe`) file
-// ! to the git commit!
+// ! to the Git commit!
 
 void wait_for_newline(char *text)
 {
@@ -19,7 +19,7 @@ void wait_for_newline(char *text)
     while (1)
     {
         char c = getchar();
-        if (c == '\n' && prev == c)
+        if (c == '\n' && prev == '\n')
         {
             break;
         }
