@@ -1,98 +1,53 @@
-#if _WIN32_WINNT < 0x0500
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
-#endif
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <windows.h>
 #include <ctype.h>
-#include <inttypes.h>
-#include <string.h>
+#include <conio.h>
 
 // ! IMPORTANT: Remember to run the `compile-linux.sh` script when `count-linux.c` (this
 // ! file) is altered -- to compile it -- and then add the .exe (`C-Count-Linux.exe`) file
 // ! to the Git commit!
 
-void wait_for_newline(char *text)
+void pause()
 {
-    printf(text);
-    char prev = 0;
-    while (1)
+    printf("Press any key to continue . . .");
+    getch(); // Wait for key input, then continue
+}
+
+void error(char *msg)
+{
+    printf("\x1B[31m"); // Set terminal text color to red
+    printf(msg);        // Print error message
+    printf("\033[0m");  // Revert terminal text to its original attributes
+
+    pause();
+    exit(2);
+}
+
+int validate_nums(unsigned long start, unsigned long end)
+{
+    // `start` greater than `end` (-1 meaning infinity; then `start`'s smaller)
+    if (start > end && end != -1)
     {
-        char c = getchar();
-        if (c == '\n' && prev == '\n')
-        {
-            break;
-        }
-        prev = c;
+        error("ERROR: Invalid input! Start integer can't be greater than end integer.\n");
+    }
+    else if (start < 1) // `start` not positive
+    {
+        error("ERROR: Invalid input! Start integer must be a positive number.\n");
+    }
+    else if (end < 1 && end != -1) // `end` not positive or -1 (infinity)
+    {
+        error("ERROR: Invalid input! End integer must be a positive number (or -1, "
+              "meaning infinity).\n");
     }
 }
 
-int is_valid_input(const char s[])
+void count(unsigned long start, unsigned long end)
 {
-    if (strcmp(s, "-1") == 0) // If string equals "-1"
-    {
-        return 1;
-    }
-
-    // Loop through characters, return 0 if non-integer found
-    for (size_t i; s[i] != '\0'; i++)
-    {
-        if (!isdigit(s[i]))
-        {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-void change_color(char color[])
-{
-    if (strcmp(color, "red") == 0)
-    {
-        printf("\x1B[31m");
-    }
-    else if (strcmp(color, "white") == 0)
-    {
-        printf("\x1B[37m");
-    }
-    else
-    {
-        change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Only the colors red and white are "
-                         "allowed.\n");
-        change_color("white");
-        exit(1);
-    }
-}
-
-void count(unsigned int start, unsigned int end)
-{
-    // ´start´ is greater than ´end´ (´end´ can however be -1, which means infinity)
-    if (end < start && end != -1)
-    {
-        change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Start integer can't be greater than end"
-                         " integer.\n");
-        change_color("white");
-        exit(2);
-    }
-    else if (start < 0) // ´start´ is negative
-    {
-        change_color("red");
-        wait_for_newline("\nERROR: Invalid input! Start integer can't be a negative "
-                         "number.\n");
-        change_color("white");
-        exit(2);
-    }
-    // ´end´ is negative (it can however be -1, which means infinity)
-    else if (end < 0 && end != -1)
-    {
-        change_color("red");
-        wait_for_newline("\nERROR: Invalid input! End integer can't be a negative number "
-                         "(except for -1, which means infinity).\n");
-        change_color("white");
-        exit(2);
-    }
+    // `validate_nums()` exits the program with an error code of 2 if an error is
+    // encountered. If nothing's wrong, it does nothing.
+    validate_nums(start, end);
 
     // Here, we have this if-else statement, with different code based on if `end` is -1
     // or not. Yes, we could just have one single for loop, which would continue forever
@@ -102,57 +57,65 @@ void count(unsigned int start, unsigned int end)
     // value.
     if (end == -1)
     {
-        unsigned int num = start;
+        unsigned long num = start;
         while (1)
         {
-            printf("\n%d", num);
+            printf("\n#%d", num);
             num += 1;
         }
     }
     else
     {
-        for (unsigned int num = start; num <= end; num++)
+        for (unsigned long num = start; num <= end; num++)
         {
             printf("\n%d", num);
         }
     }
 }
 
+int is_integer(char s[])
+{
+    if (strcmp(s, "-1") == 0) // String doesn't equal "-1"
+    {
+        return 1;
+    }
+
+    // Loop through characters, return 0 if non-integer found
+    for (int i = 0; s[i] != '\0'; i++)
+    {
+        if (!isdigit(s[i]))
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
 int main(int argc, char *argv[])
 {
-    if (argc > 3) // More than 2 arguments
+    if (argc > 3) // More than two arguments
     {
-        change_color("red");
-        printf("ERROR: Too many arguments! The maximum is 2; start integer and end "
-               "integer.\n");
-        change_color("white");
-        exit(2);
+        error("ERROR: Too many arguments! The maximum is 2; start integer and end "
+              "integer.\n");
     }
-    else if (argc < 3) // Fewer than 2 arguments
+    else if (argc < 3) // Fewer than two arguments
     {
-        change_color("red");
-        printf("ERROR: Missing argument(s)! Requires both start integer and end integer."
-               "\n");
-        change_color("white");
-        exit(2);
+        error("ERROR: Missing argument(s)! Requires both start integer and end integer."
+              "\n");
     }
-    else if (is_valid_input(argv[1]) == 0 || is_valid_input(argv[2]) == 0)
+    else if (!is_integer(argv[1]))
     {
-        change_color("red");
-        printf("ERROR: Invalid input! Start integer and end integer must be entirely "
-               "numerical.\n");
-        change_color("white");
-        exit(2);
+        error("ERROR: Invalid input! Start integer must be entirely numerical.\n");
+    }
+    else if (!is_integer(argv[2]))
+    {
+        error("ERROR: Invalid input! End integer must be entirely numerical.\n");
     }
 
-    const char *start_param = argv[1];
-    const char *end_param = argv[2];
-    char *endptr;
-
+    char *ptr;
     // Convert chars to 64 bit ints
-    long start = strtoll(start_param, &endptr, 10);
-    long end = strtoll(end_param, &endptr, 10);
-
+    long start = strtoll(argv[1], &ptr, 10);
+    long end = strtoll(argv[2], &ptr, 10);
     count(start, end);
     exit(0);
 }
