@@ -42,8 +42,8 @@ void error(char *msg)
 
 int validate_nums(unsigned long start, unsigned long end)
 {
-    // `start` greater than `end` (-1 meaning infinity; then start's smaller)
-    if (start < end && end != -1)
+    // `start` greater than `end` (-1 meaning infinity; then `start`'s smaller)
+    if (start > end && end != -1)
     {
         error("ERROR: Invalid input! Start integer can't be greater than end integer.\n");
     }
