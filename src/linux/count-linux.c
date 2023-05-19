@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <windows.h>
+#include <string.h>
 #include <ctype.h>
-#include <conio.h>
 
 // ! IMPORTANT: Remember to run the `compile-linux.sh` script when `count-linux.c` (this
 // ! file) is altered -- to compile it -- and then add the .exe (`C-Count-Linux.exe`) file
@@ -11,8 +10,9 @@
 
 void pause()
 {
-    printf("Press any key to continue . . .");
-    getch(); // Wait for key input, then continue
+    printf("Press enter to continue . . .");
+    scanf(""); // Wait for enter key, then continue
+    // TODO: Make `pause()` don't require enter
 }
 
 void error(char *msg)
@@ -60,7 +60,7 @@ void count(unsigned long start, unsigned long end)
         unsigned long num = start;
         while (1)
         {
-            printf("\n#%d", num);
+            printf("\n%d", num);
             num += 1;
         }
     }
