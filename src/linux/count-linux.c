@@ -12,7 +12,7 @@ void pause()
 {
     printf("Press enter to continue . . .");
     scanf(""); // Wait for enter key, then continue
-    // TODO: Make `pause()` don't require enter
+    // TODO: Make `pause()` not require enter
 }
 
 void error(char *msg)
